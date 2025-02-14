@@ -5,8 +5,17 @@ plugins {
     id 'com.github.node-gradle.node' version '3.3.0'
 }
 
+node {
+    version = '18.16.0'
+    npmVersion = '9.5.1'
+    download = true
+    workDir = file("${project.buildDir}/nodejs")
+    npmWorkDir = file("${project.buildDir}/npm")
+}
+
 group = 'com.andrena'
 version = '0.0.1-SNAPSHOT'
+
 
 java {
     toolchain {
@@ -35,6 +44,21 @@ node {
     version = '18.16.0'
     npmVersion = '9.5.1'
     download = true
+    nodeProjectDir = file("${project.projectDir}/frontend")
+}
+
+task buildFrontend(type: NpmTask) {
+    dependsOn npmInstall
+    args = ['run', 'build']
+    workingDir = file('frontend')
+}
+
+tasks.named('processResources') {
+    dependsOn buildFrontend
+    from('frontend/dist') {
+        into('static')
+    }
+
 }
 
 tasks.named('test') {
