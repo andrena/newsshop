@@ -14,6 +14,7 @@ node {
 }
 
 group = 'com.andrena'
+name = "newsshop"
 version = '0.0.1-SNAPSHOT'
 
 
