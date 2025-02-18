@@ -39,13 +39,13 @@ public class NewsletterRepository {
     }
 
     private void insert(Newsletter newsletter) {
-        execute(String.format("INSERT INTO newsletter (email, name, source, confirmed) VALUES ('%s', '%s', '%s', %b)",
-                newsletter.getEmail(), newsletter.getName(), newsletter.getSource(), newsletter.isConfirmed()));
+        execute(String.format("INSERT INTO newsletter (email, name, source, confirmed, mail_properties) VALUES ('%s', '%s', '%s', %b, '%s')",
+                newsletter.getEmail(), newsletter.getName(), newsletter.getSource(), newsletter.isConfirmed(), newsletter.getMailProperties()));
     }
 
     private void update(Newsletter newsletter) {
-        execute(String.format("UPDATE newsletter SET email = '%s', name = '%s', source = '%s', confirmed = %b WHERE id = %d",
-                newsletter.getEmail(), newsletter.getName(), newsletter.getSource(), newsletter.isConfirmed(), newsletter.getId()));
+        execute(String.format("UPDATE newsletter SET email = '%s', name = '%s', source = '%s', confirmed = %b, mail_properties = '%s' WHERE id = %d",
+                newsletter.getEmail(), newsletter.getName(), newsletter.getSource(), newsletter.isConfirmed(), newsletter.getMailProperties(), newsletter.getId()));
     }
 
     public Optional<Newsletter> findByEmail(String email) {
@@ -117,6 +117,7 @@ public class NewsletterRepository {
             newsletter.setName(rs.getString("name"));
             newsletter.setSource(rs.getString("source"));
             newsletter.setConfirmed(rs.getBoolean("confirmed"));
+            newsletter.setMailProperties(rs.getString("mail_properties"));
             return newsletter;
         } catch (SQLException e) {
             throw new RuntimeException(e);

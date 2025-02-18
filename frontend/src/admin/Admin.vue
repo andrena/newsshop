@@ -12,6 +12,7 @@
           <th>Name</th>
           <th>Source</th>
           <th>Confirmed</th>
+          <th>Mail Properties</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -21,6 +22,7 @@
           <td v-html="subscriber.name"></td>
           <td v-html="subscriber.source"></td>
           <td>{{ subscriber.confirmed ? 'Yes' : 'No' }}</td>
+          <td v-html="subscriber.mailProperties"></td>
           <td>
             <button @click="deleteSubscriber(subscriber.id)" class="delete-btn">Delete</button>
           </td>

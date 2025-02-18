@@ -17,8 +17,18 @@ public class Newsletter {
     private String source;
     private boolean confirmed;
 
+    private String mailProperties;
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getMailProperties() {
+        return mailProperties;
+    }
+
+    public void setMailProperties(String mailProperties) {
+        this.mailProperties = mailProperties;
     }
 
     public String getEmail() {

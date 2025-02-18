@@ -90,7 +90,9 @@ label {
   display: block;
   margin-bottom: 5px;
 }
-input {
+input,
+select,
+textarea {
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;

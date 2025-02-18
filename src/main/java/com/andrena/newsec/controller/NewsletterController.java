@@ -2,15 +2,25 @@ package com.andrena.newsec.controller;
 
 import com.andrena.newsec.model.Newsletter;
 import com.andrena.newsec.repository.NewsletterRepository;
+import com.andrena.newsec.util.ExcelGenerator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/newsletter")
@@ -21,13 +31,17 @@ public class NewsletterController {
 
     private final NewsletterRepository newsletterRepository;
 
-    public NewsletterController(NewsletterRepository newsletterRepository) {
+    private final ExcelGenerator excelGenerator;
+
+    @Autowired
+    public NewsletterController(NewsletterRepository newsletterRepository, ExcelGenerator excelGenerator) {
         this.newsletterRepository = newsletterRepository;
+        this.excelGenerator = excelGenerator;
     }
 
     @PostMapping("/subscribe")
     public ResponseEntity<?> subscribe(@RequestBody Newsletter newsletter) {
-        if (!EMAIL_PATTERN_FROM_AI_CHAT.matcher(newsletter.getEmail()).matches()) {
+        if (false && !EMAIL_PATTERN_FROM_AI_CHAT.matcher(newsletter.getEmail()).matches()) {
             return ResponseEntity
                     .status(BAD_REQUEST)
                     .body(String.format(
@@ -55,7 +69,18 @@ public class NewsletterController {
         return ResponseEntity.ok(newsletterRepository.findAll());
     }
 
-    @GetMapping("/search")
+    @GetMapping("/download")
+    public ResponseEntity<InputStreamResource> downloadExcel() {
+        ByteArrayInputStream in = excelGenerator.generateExcel(newsletterRepository.findAll());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=subscribers.xlsx");
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(in));
+    }
+
     public ResponseEntity<?> searchSubscribers(@RequestParam String email) {
         return ResponseEntity.ok(newsletterRepository.findByEmail(email));
     }
@@ -64,7 +89,7 @@ public class NewsletterController {
     public ResponseEntity<?> unsubscribe(@PathVariable Long id) {
         newsletterRepository.deleteById(id);
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
+                .status(NO_CONTENT)
                 .build();
     }
 
