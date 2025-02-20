@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Newsletter {
+public class Newsletter implements Newsletterable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,7 @@ public class Newsletter {
         this.email = email;
     }
 
+    @Override
     public String getMailProperties() {
         return mailProperties;
     }
@@ -31,6 +32,7 @@ public class Newsletter {
         this.mailProperties = mailProperties;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
@@ -39,10 +41,12 @@ public class Newsletter {
         this.source = source;
     }
 
+    @Override
     public String getSource() {
         return source;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -51,6 +55,7 @@ public class Newsletter {
         this.id = id;
     }
 
+    @Override
     public boolean isConfirmed() {
         return confirmed;
     }
@@ -59,6 +64,7 @@ public class Newsletter {
         this.confirmed = confirmed;
     }
 
+    @Override
     public String getName() {
         return name;
     }

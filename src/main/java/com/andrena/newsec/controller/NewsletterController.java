@@ -1,55 +1,50 @@
 package com.andrena.newsec.controller;
 
 import com.andrena.newsec.model.Newsletter;
+import com.andrena.newsec.model.Newsletterable;
 import com.andrena.newsec.repository.NewsletterRepository;
-import com.andrena.newsec.util.ExcelGenerator;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import com.andrena.newsec.repository.PasswordRepository;
+import com.andrena.newsec.model.Password;
+import com.thoughtworks.xstream.XStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequestMapping("/api/newsletter")
 public class NewsletterController {
-    public static final Pattern EMAIL_PATTERN_FROM_AI_CHAT = Pattern.compile(
-            "^((((.+)+)+)*)+@[\\w+,\\.]+$"
-    );
 
     private final NewsletterRepository newsletterRepository;
 
-    private final ExcelGenerator excelGenerator;
+    private final PasswordRepository passwordRepository;
 
     @Autowired
-    public NewsletterController(NewsletterRepository newsletterRepository, ExcelGenerator excelGenerator) {
+    public NewsletterController(NewsletterRepository newsletterRepository, PasswordRepository passwordRepository) {
         this.newsletterRepository = newsletterRepository;
-        this.excelGenerator = excelGenerator;
+        this.passwordRepository = passwordRepository;
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<?> importFromXml(@RequestBody String xml) {
+        XStream xstream = new XStream();
+
+        try {
+            Newsletterable newsletter = (Newsletterable) xstream.fromXML(xml);
+            newsletterRepository.save(newsletter.toNewsletter());
+            return ResponseEntity.ok(newsletter);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Invalid XML format");
+        }
     }
 
     @PostMapping("/subscribe")
     public ResponseEntity<?> subscribe(@RequestBody Newsletter newsletter) {
-        if (false && !EMAIL_PATTERN_FROM_AI_CHAT.matcher(newsletter.getEmail()).matches()) {
-            return ResponseEntity
-                    .status(BAD_REQUEST)
-                    .body(String.format(
-                            "Ungültige E-Mail-Adresse '%s'",
-                            newsletter.getEmail()
-                    ));
-        }
-        Optional<Newsletter> mayBeExisting = newsletterRepository.findByEmail(newsletter.getEmail());
+        Optional<Newsletter> mayBeExisting = newsletterRepository.findByEmailOrName(newsletter.getEmail(), newsletter.getName());
         if (mayBeExisting.isPresent()) {
             Newsletter existing = mayBeExisting.get();
             return ResponseEntity
@@ -69,20 +64,9 @@ public class NewsletterController {
         return ResponseEntity.ok(newsletterRepository.findAll());
     }
 
-    @GetMapping("/download")
-    public ResponseEntity<InputStreamResource> downloadExcel() {
-        ByteArrayInputStream in = excelGenerator.generateExcel(newsletterRepository.findAll());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=subscribers.xlsx");
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new InputStreamResource(in));
-    }
-
-    public ResponseEntity<?> searchSubscribers(@RequestParam String email) {
-        return ResponseEntity.ok(newsletterRepository.findByEmail(email));
+    @GetMapping("/search")
+    public ResponseEntity<?> searchSubscribers(@RequestParam String text) {
+        return ResponseEntity.ok(newsletterRepository.findByEmailOrName(text, text));
     }
 
     @DeleteMapping("/unsubscribe/{id}")

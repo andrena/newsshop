@@ -40,33 +40,31 @@ public class NewsletterRepository {
 
     private void insert(Newsletter newsletter) {
         execute(String.format("INSERT INTO newsletter (email, name, source, confirmed, mail_properties) VALUES ('%s', '%s', '%s', %b, '%s')",
-                newsletter.getEmail(), newsletter.getName(), newsletter.getSource(), newsletter.isConfirmed(), newsletter.getMailProperties()));
+                newsletter.getEmail(), newsletter.getName(), escape(newsletter.getSource()), newsletter.isConfirmed(), escape(newsletter.getMailProperties())));
     }
 
     private void update(Newsletter newsletter) {
         execute(String.format("UPDATE newsletter SET email = '%s', name = '%s', source = '%s', confirmed = %b, mail_properties = '%s' WHERE id = %d",
-                newsletter.getEmail(), newsletter.getName(), newsletter.getSource(), newsletter.isConfirmed(), newsletter.getMailProperties(), newsletter.getId()));
+                newsletter.getEmail(), newsletter.getName(), escape(newsletter.getSource()), newsletter.isConfirmed(), escape(newsletter.getMailProperties()), newsletter.getId()));
     }
 
-    public Optional<Newsletter> findByEmail(String email) {
-        return queryOne("SELECT * FROM newsletter WHERE email = '" + email + "'", this::mapRowToNewsletter);
+    private String escape(String name) {
+        if (name == null) {
+            return name;
+        }
+        return name.replace("'", "''");
+    }
+
+    public Optional<Newsletter> findByEmailOrName(String email, String name) {
+        return queryOne("SELECT * FROM newsletter WHERE email = '" + email + "' or name = '" + name + "'", this::mapRowToNewsletter);
     }
 
     public List<Newsletter> findByName(String namePart) {
         return queryAll("SELECT * FROM newsletter WHERE name LIKE '%" + namePart + "%'", this::mapRowToNewsletter);
     }
 
-    public boolean existsByEmail(String email) {
-        return findByEmail(email).isPresent();
-    }
-
-
     public void confirmSubscription(String email) {
         execute("UPDATE newsletter SET confirmed = true WHERE email = '" + email + "'");
-    }
-
-    public List<Newsletter> findByPreference(String preference) {
-        return queryAll("SELECT * FROM newsletter WHERE preferences LIKE '%" + preference + "%'", this::mapRowToNewsletter);
     }
 
     private void execute(String query) {
