@@ -1,19 +1,26 @@
 package com.andrena.newsec.controller;
 
-import com.andrena.newsec.model.Newsletter;
-import com.andrena.newsec.model.Newsletterable;
-import com.andrena.newsec.repository.NewsletterRepository;
-import com.andrena.newsec.repository.PasswordRepository;
-import com.andrena.newsec.model.Password;
-import com.thoughtworks.xstream.XStream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.Optional;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.andrena.newsec.model.Newsletter;
+import com.andrena.newsec.model.Newsletterable;
+import com.andrena.newsec.repository.NewsletterRepository;
+import com.thoughtworks.xstream.XStream;
 
 @RestController
 @RequestMapping("/api/newsletter")
@@ -21,12 +28,9 @@ public class NewsletterController {
 
     private final NewsletterRepository newsletterRepository;
 
-    private final PasswordRepository passwordRepository;
-
     @Autowired
-    public NewsletterController(NewsletterRepository newsletterRepository, PasswordRepository passwordRepository) {
+    public NewsletterController(NewsletterRepository newsletterRepository) {
         this.newsletterRepository = newsletterRepository;
-        this.passwordRepository = passwordRepository;
     }
 
     @PostMapping("/import")
