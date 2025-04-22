@@ -1,6 +1,6 @@
 <template>
   <div v-if="showConfirmation">
-    <ConfirmationPage />
+    <ConfirmationPage :email="email" :name="name" :source="source" />
   </div>
   <div v-else-if="showError">
     <ErrorPage :errorMessage="errorMessage" />
@@ -59,14 +59,15 @@ export default {
   methods: {
     async subscribe() {
       try {
-        await axios.post('/api/newsletter/subscribe', {
+        const response = await axios.post('/api/newsletter/subscribe', {
           email: this.email,
           name: this.name,
           source: this.source === 'Other' ? this.otherSource : this.source
         })
         this.showConfirmation = true
-        this.email = ''
-        this.name = ''
+        this.email = response.data.email
+        this.name = response.data.name
+        this.source = response.data.source
       } catch (error) {
         this.errorMessage = `${error.message}: ${JSON.stringify(error.response?.data)}`
         this.showError = true
