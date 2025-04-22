@@ -19,6 +19,10 @@ public class Newsletter implements Newsletterable {
 
     private String mailProperties;
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -73,5 +77,61 @@ public class Newsletter implements Newsletterable {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "Newsletter{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", source='" + source + '\'' +
+                ", confirmed=" + confirmed +
+                ", mailProperties='" + mailProperties + '\'' +
+                '}';
+    }
+
+    public static class Builder {
+
+        private String email;
+        private String name;
+        private String source;
+        private boolean confirmed;
+        private String mailProperties;
+
+        public Builder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder withSource(String source) {
+            this.source = source;
+            return this;
+        }
+
+        public Builder withConfirmed(boolean confirmed) {
+            this.confirmed = confirmed;
+            return this;
+        }
+
+        public Builder withMailProperties(String mailProperties) {
+            this.mailProperties = mailProperties;
+            return this;
+        }
+
+        public Newsletter build() {
+            Newsletter newsletter = new Newsletter();
+            newsletter.setEmail(email);
+            newsletter.setName(name);
+            newsletter.setSource(source);
+            newsletter.setConfirmed(confirmed);
+            newsletter.setMailProperties(mailProperties);
+            return newsletter;
+        }
+
+    }
 
 }
