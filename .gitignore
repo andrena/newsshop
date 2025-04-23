@@ -43,3 +43,4 @@ out/
 /frontend/node_modules/*
 /frontend/dist/*
 /*.db
+/property(org.gradle.api.file.Directory, fixed(class org.gradle.api.internal.file.DefaultFilePropertyFactory$FixedDirectory, /
