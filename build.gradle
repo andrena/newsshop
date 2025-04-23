@@ -9,8 +9,8 @@ node {
     version = '18.16.0'
     npmVersion = '9.5.1'
     download = true
-    workDir = file("${project.buildDir}/nodejs")
-    npmWorkDir = file("${project.buildDir}/npm")
+    workDir = file("${project.layout.buildDirectory}/nodejs")
+    npmWorkDir = file("${project.layout.buildDirectory}/npm")
 }
 
 group = 'com.andrena'
