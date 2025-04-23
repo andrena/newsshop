@@ -70,9 +70,7 @@ public class NewsletterController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Newsletter>> searchSubscribers(@RequestParam String text) {
-        return newsletterRepository.findByEmailOrName(text, text)
-                .map(subscriber -> ResponseEntity.ok(List.of(subscriber)))
-                .orElse(ResponseEntity.status(NOT_FOUND).build());
+        return ResponseEntity.ok(newsletterRepository.findLikeEmailOrName(text, text));
 
     }
 

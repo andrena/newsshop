@@ -56,7 +56,12 @@ public class NewsletterRepository {
     }
 
     public Optional<Newsletter> findByEmailOrName(String email, String name) {
-        return queryOne("SELECT * FROM newsletter WHERE email LIKE '%" + email + "%' or name LIKE '%" + name + "%'", this::mapRowToNewsletter);
+        return queryOne("SELECT * FROM newsletter WHERE email = '" + email + "' or name = '" + name + "'", this::mapRowToNewsletter);
+    }
+
+    public List<Newsletter> findLikeEmailOrName(String email, String name) {
+        return queryAll("SELECT * FROM newsletter WHERE email LIKE '%" + email + "%' or name LIKE '%" + name + "%'", this::mapRowToNewsletter);
+
     }
 
     public List<Newsletter> findByName(String namePart) {
@@ -121,5 +126,4 @@ public class NewsletterRepository {
             throw new RuntimeException(e);
         }
     }
-
 }
