@@ -2,7 +2,7 @@
   <div class="admin-dashboard">
     <h2>Newsletter Admin Dashboard</h2>
     <div class="search-box">
-      <input type="text" v-model="searchEmail" placeholder="Search by email">
+      <input type="text" v-model="searchEmail" @keydown.enter="searchSubscribers" placeholder="Search by email">
       <button @click="searchSubscribers">Search</button>
     </div>
     <table>
