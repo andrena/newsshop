@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'com.github.node-gradle.node' version '3.3.0'
+    id "org.owasp.dependencycheck" version "12.1.1"
 }
 
 node {
@@ -48,7 +49,7 @@ node {
     nodeProjectDir = file("${project.projectDir}/frontend")
 }
 
-task buildFrontend(type: NpmTask) {
+tasks.register('buildFrontend', NpmTask) {
     dependsOn npmInstall
     args = ['run', 'build']
     workingDir = file('frontend')
