@@ -58,7 +58,7 @@ export default {
     async searchSubscribers() {
       try {
         const response = await axios.get('/api/newsletter/search', {
-          params: { email: this.searchEmail }
+          params: { text: this.searchEmail }
         })
         this.subscribers = response.data
       } catch (error) {

@@ -1,8 +1,6 @@
 package com.andrena.newsec.controller;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,8 @@ import com.andrena.newsec.model.Newsletter;
 import com.andrena.newsec.model.Newsletterable;
 import com.andrena.newsec.repository.NewsletterRepository;
 import com.thoughtworks.xstream.XStream;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/newsletter")
@@ -64,13 +64,16 @@ public class NewsletterController {
     }
 
     @GetMapping("/subscribers")
-    public ResponseEntity<?> getAllSubscribers() {
+    public ResponseEntity<List<Newsletter>> getAllSubscribers() {
         return ResponseEntity.ok(newsletterRepository.findAll());
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchSubscribers(@RequestParam String text) {
-        return ResponseEntity.ok(newsletterRepository.findByEmailOrName(text, text));
+    public ResponseEntity<List<Newsletter>> searchSubscribers(@RequestParam String text) {
+        return newsletterRepository.findByEmailOrName(text, text)
+                .map(subscriber -> ResponseEntity.ok(List.of(subscriber)))
+                .orElse(ResponseEntity.status(NOT_FOUND).build());
+
     }
 
     @DeleteMapping("/unsubscribe/{id}")
