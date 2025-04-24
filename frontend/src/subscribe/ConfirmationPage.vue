@@ -6,7 +6,7 @@
       <tbody>
       <tr>
         <td>e-mail:</td>
-        <td v-html="email"></td>
+        <td>{{email}}</td>
       </tr>
       <tr>
         <td>name:</td>

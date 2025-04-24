@@ -38,6 +38,7 @@
 import axios from 'axios'
 import ConfirmationPage from './ConfirmationPage.vue'
 import ErrorPage from './ErrorPage.vue'
+import DOMPurify from "dompurify";
 
 export default {
   name: 'Subscribe',
@@ -66,8 +67,8 @@ export default {
         })
         this.showConfirmation = true
         this.email = response.data.email
-        this.name = response.data.name
-        this.source = response.data.source
+        this.name = DOMPurify.sanitize(response.data.name)
+        this.source = DOMPurify.sanitize(response.data.source)
       } catch (error) {
         this.errorMessage = `${error.message}: ${JSON.stringify(error.response?.data)}`
         this.showError = true
