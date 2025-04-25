@@ -7,12 +7,14 @@ plugins {
 }
 
 node {
-    version = '18.16.0'
-    npmVersion = '9.5.1'
+    version = '20.12.0'
+    npmVersion = '10.5.0'
     download = true
     workDir = file("${project.layout.buildDirectory}/nodejs")
     npmWorkDir = file("${project.layout.buildDirectory}/npm")
+    nodeProjectDir = file("${project.projectDir}/frontend")
 }
+
 
 group = 'com.andrena'
 version = '0.0.1-SNAPSHOT'
@@ -40,13 +42,6 @@ dependencies {
     
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-}
-
-node {
-    version = '18.16.0'
-    npmVersion = '9.5.1'
-    download = true
-    nodeProjectDir = file("${project.projectDir}/frontend")
 }
 
 tasks.register('buildFrontend', NpmTask) {
