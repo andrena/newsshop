@@ -10,7 +10,6 @@ import java.sql.*;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 @Repository
 public class NewsletterRepository {
@@ -23,11 +22,31 @@ public class NewsletterRepository {
     }
 
     public List<Newsletter> findAll() {
-        return queryAll("SELECT * FROM newsletter", this::mapRowToNewsletter);
+        List<Newsletter> all = new ArrayList<>();
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM newsletter");
+                ResultSet resultSet = preparedStatement.executeQuery()
+        ) {
+            while (resultSet.next()) {
+                all.add(mapRowToNewsletter(resultSet));
+            }
+            return all;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void deleteById(Long id) {
-        execute("DELETE FROM newsletter WHERE id = " + id);
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM newsletter WHERE id = ?")
+        ) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void save(Newsletter newsletter) {
@@ -39,13 +58,36 @@ public class NewsletterRepository {
     }
 
     private void insert(Newsletter newsletter) {
-        execute(String.format("INSERT INTO newsletter (email, name, source, confirmed, mail_properties) VALUES ('%s', '%s', '%s', %b, '%s')",
-                newsletter.getEmail(), newsletter.getName(), escape(newsletter.getSource()), newsletter.isConfirmed(), escape(newsletter.getMailProperties())));
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO newsletter (email, name, source, confirmed, mail_properties) VALUES (?, ?, ?, ? ,?)")
+        ) {
+            preparedStatement.setString(1, newsletter.getEmail());
+            preparedStatement.setString(2, escape(newsletter.getName()));
+            preparedStatement.setString(3, escape(newsletter.getSource()));
+            preparedStatement.setBoolean(4, newsletter.isConfirmed());
+            preparedStatement.setString(5, escape(newsletter.getMailProperties()));
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void update(Newsletter newsletter) {
-        execute(String.format("UPDATE newsletter SET email = '%s', name = '%s', source = '%s', confirmed = %b, mail_properties = '%s' WHERE id = %d",
-                newsletter.getEmail(), newsletter.getName(), escape(newsletter.getSource()), newsletter.isConfirmed(), escape(newsletter.getMailProperties()), newsletter.getId()));
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement("UPDATE newsletter SET email = ?, name = ?, source = ?, confirmed = ?, mail_properties = ? WHERE id = ?")
+        ) {
+            preparedStatement.setString(1, newsletter.getEmail());
+            preparedStatement.setString(2, escape(newsletter.getName()));
+            preparedStatement.setString(3, escape(newsletter.getSource()));
+            preparedStatement.setBoolean(4, newsletter.isConfirmed());
+            preparedStatement.setString(5, escape(newsletter.getMailProperties()));
+            preparedStatement.setLong(6, newsletter.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String escape(String name) {
@@ -56,55 +98,33 @@ public class NewsletterRepository {
     }
 
     public Optional<Newsletter> findByEmailOrName(String email, String name) {
-        return queryOne("SELECT * FROM newsletter WHERE email = '" + email + "' or name = '" + name + "'", this::mapRowToNewsletter);
+        try (
+                Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from newsletter WHERE email = ? or name = ?")
+        ){
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(mapRowToNewsletter(resultSet));
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Newsletter> findLikeEmailOrName(String email, String name) {
-        return queryAll("SELECT * FROM newsletter WHERE email LIKE '%" + email + "%' or name LIKE '%" + name + "%'", this::mapRowToNewsletter);
-
-    }
-
-    public List<Newsletter> findByName(String namePart) {
-        return queryAll("SELECT * FROM newsletter WHERE name LIKE '%" + namePart + "%'", this::mapRowToNewsletter);
-    }
-
-    public void confirmSubscription(String email) {
-        execute("UPDATE newsletter SET confirmed = true WHERE email = '" + email + "'");
-    }
-
-    private void execute(String query) {
-        try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement()) {
-
-            stmt.executeUpdate(query);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private <T> Optional<T> queryOne(String query, Function<ResultSet, T> mapping) {
-        try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            if (rs.next()) {
-                return Optional.of(mapping.apply(rs));
-            } else {
-                return Optional.empty();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private <T> List<T> queryAll(String query, Function<ResultSet, T> mapping) {
-        List<T> all = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            while (rs.next()) {
-                all.add(mapping.apply(rs));
+        List<Newsletter> all = new ArrayList<>();
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM newsletter WHERE email LIKE ? or name LIKE ?")
+        ) {
+            preparedStatement.setString(1, "%" + email + "%");
+            preparedStatement.setString(2, "%" + name + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                all.add(mapRowToNewsletter(resultSet));
             }
             return all;
         } catch (SQLException e) {
