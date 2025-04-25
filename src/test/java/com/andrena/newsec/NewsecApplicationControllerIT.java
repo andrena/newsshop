@@ -96,4 +96,22 @@ class NewsecApplicationControllerIT {
                 .andExpect(content().string("Ein Newsletter-Abonnement für die E-Mail-Adresse 'email2@email.com' existiert bereits (Name: name2)"));
     }
 
+    @Test
+    @WithMockUser
+    void shouldBeAbleToSearch() throws Exception {
+        MvcResult resultActions = mockMvc.perform(get("/api/newsletter/search").param("text", "jo"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        String content = resultActions.getResponse().getContentAsString();
+
+        List<Newsletter> foundNewsletters = objectMapper.readValue(content, new TypeReference<>() {});
+        assertThat(foundNewsletters)
+                .extracting("name", "email")
+                .containsExactly(
+                        tuple("John Doe", "john.doe@example.com"),
+                        tuple("Alice Jones", "alice.jones@example.com")
+                );
+    }
 }
