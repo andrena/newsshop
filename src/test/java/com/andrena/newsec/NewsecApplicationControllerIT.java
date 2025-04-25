@@ -99,14 +99,7 @@ class NewsecApplicationControllerIT {
     @Test
     @WithMockUser
     void shouldBeAbleToSearch() throws Exception {
-        MvcResult resultActions = mockMvc.perform(get("/api/newsletter/search").param("text", "jo"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        String content = resultActions.getResponse().getContentAsString();
-
-        List<Newsletter> foundNewsletters = objectMapper.readValue(content, new TypeReference<>() {});
+        List<Newsletter> foundNewsletters = searchNewsletter("jo");
         assertThat(foundNewsletters)
                 .extracting("name", "email")
                 .containsExactly(
@@ -114,4 +107,33 @@ class NewsecApplicationControllerIT {
                         tuple("Alice Jones", "alice.jones@example.com")
                 );
     }
+
+    @Test
+    @WithMockUser
+    void shouldBeAbleToDeleteNewsletter() throws Exception {
+        Newsletter newsletter = Newsletter.builder()
+                .withEmail("email1@email.com")
+                .withName("name1")
+                .withSource("source1")
+                .build();
+
+        post(newsletter);
+
+        Long id = searchNewsletter("name1").getFirst().getId();
+        assertThat(id).isNotNull();
+        mockMvc.perform(delete("/api/newsletter/unsubscribe/" + id)).andExpect(status().isNoContent());
+
+        List<Newsletter> foundNewsletters = searchNewsletter("name1");
+        assertThat(foundNewsletters).hasSize(0);
+    }
+
+    private List<Newsletter> searchNewsletter(String searchText) throws Exception {
+        MvcResult resultActions = mockMvc.perform(get("/api/newsletter/search").param("text", searchText))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        String content = resultActions.getResponse().getContentAsString();
+        return objectMapper.readValue(content, new TypeReference<>() {});
+    }
+
 }
