@@ -1,6 +1,6 @@
 package com.andrena.newsec.repository;
 
-import com.andrena.newsec.model.Password;
+import com.andrena.newsec.model.LaunchCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,35 +10,35 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Repository
-public class PasswordRepository {
+public class LaunchCodesRepository {
 
     private final DataSource dataSource;
 
     @Autowired
-    public PasswordRepository(DataSource dataSource) {
+    public LaunchCodesRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public void save(Password password) {
-        if (password.getId() == null) {
-            insert(password);
+    public void save(LaunchCode launchCode) {
+        if (launchCode.getId() == null) {
+            insert(launchCode);
         } else {
-            update(password);
+            update(launchCode);
         }
     }
 
-    private void insert(Password password) {
-        execute(String.format("INSERT INTO password (username, password) VALUES ('%s', '%s')",
-                password.getUsername(), password.getPassword()));
+    private void insert(LaunchCode launchCode) {
+        execute(String.format("INSERT INTO launchCode (device, launchCode) VALUES ('%s', '%s')",
+                launchCode.getDevice(), launchCode.getLaunchCode()));
     }
 
-    private void update(Password password) {
-        execute(String.format("UPDATE password SET username = '%s', password = '%s' WHERE id = %d",
-                password.getUsername(), password.getPassword(), password.getId()));
+    private void update(LaunchCode launchCode) {
+        execute(String.format("UPDATE launchCode SET device = '%s', launchCode = '%s' WHERE id = %d",
+                launchCode.getDevice(), launchCode.getLaunchCode(), launchCode.getId()));
     }
 
-    public Optional<Password> findByUsername(String username) {
-        return queryOne("SELECT * FROM password WHERE username = '" + username + "'", this::mapRowToPassword);
+    public Optional<LaunchCode> findByDevice(String device) {
+        return queryOne("SELECT * FROM launchCode WHERE device = '" + device + "'", this::mapRowToLaunchCode);
     }
 
     private void execute(String query) {
@@ -66,13 +66,13 @@ public class PasswordRepository {
         }
     }
 
-    private Password mapRowToPassword(ResultSet rs) {
+    private LaunchCode mapRowToLaunchCode(ResultSet rs) {
         try {
-            Password password = new Password();
-            password.setId(rs.getLong("id"));
-            password.setUsername(rs.getString("username"));
-            password.setPassword(rs.getString("password"));
-            return password;
+            LaunchCode launchCode = new LaunchCode();
+            launchCode.setId(rs.getLong("id"));
+            launchCode.setDevice(rs.getString("device"));
+            launchCode.setLaunchCode(rs.getString("launchCode"));
+            return launchCode;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -6,14 +6,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Password {
+public class LaunchCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-    private String password;
+    private String device;
+    private String launchCode;
 
     public Long getId() {
         return id;
@@ -23,19 +23,19 @@ public class Password {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getDevice() {
+        return device;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setDevice(String username) {
+        this.device = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getLaunchCode() {
+        return launchCode;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setLaunchCode(String password) {
+        this.launchCode = password;
     }
 }
