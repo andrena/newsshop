@@ -16,6 +16,10 @@
         <td>source:</td>
         <td v-html="source"></td>
       </tr>
+      <tr>
+        <td>MailProperties:</td>
+        <td v-html="mailProperties"></td>
+      </tr>
       </tbody>
     </table>
   </div>
@@ -32,6 +36,9 @@ export default {
       type: String
     },
     source: {
+      type: String
+    },
+    mailProperties: {
       type: String
     },
   }

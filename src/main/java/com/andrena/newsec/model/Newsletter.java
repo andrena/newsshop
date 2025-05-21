@@ -17,7 +17,13 @@ public class Newsletter implements Newsletterable {
     private String source;
     private boolean confirmed;
 
-    private String mailProperties;
+    // Default-Mail-Properties
+    private String mailProperties = "{\"header\": \"\n" +
+            "<b>Welcome</b>\n" +
+            "\", \"footer\": \"\n" +
+            "\n" +
+            "Thank you for subscribing!\n" +
+            "\"}";
 
     public static Builder builder() {
         return new Builder();

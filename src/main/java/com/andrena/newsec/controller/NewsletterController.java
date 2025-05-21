@@ -48,19 +48,18 @@ public class NewsletterController {
 
     @PostMapping("/subscribe")
     public ResponseEntity<?> subscribe(@RequestBody Newsletter newsletter) {
-        Optional<Newsletter> mayBeExisting = newsletterRepository.findByEmailOrName(newsletter.getEmail(), newsletter.getName());
-        if (mayBeExisting.isPresent()) {
-            Newsletter existing = mayBeExisting.get();
-            return ResponseEntity
-                    .status(CONFLICT)
-                    .body(String.format(
-                            "Ein Newsletter-Abonnement für die E-Mail-Adresse '%s' existiert bereits (Name: %s)",
-                            existing.getEmail(),
-                            existing.getName()
-                    ));
-        }
-        newsletterRepository.save(newsletter);
-        return ResponseEntity.ok(newsletter);
+        return newsletterRepository.findByEmailOrName(newsletter.getEmail(), newsletter.getName())
+                .<ResponseEntity<Object>>map(existingNewsletter -> ResponseEntity
+                        .status(CONFLICT)
+                        .body(String.format(
+                                "Ein Newsletter-Abonnement für die E-Mail-Adresse '%s' existiert bereits (Name: %s)",
+                                existingNewsletter.getEmail(),
+                                existingNewsletter.getName())
+                        )
+                ).orElseGet(() -> {
+                    newsletterRepository.save(newsletter);
+                    return ResponseEntity.ok(newsletter);
+                });
     }
 
     @GetMapping("/subscribers")

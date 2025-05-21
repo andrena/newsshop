@@ -1,6 +1,6 @@
 <template>
   <div v-if="showConfirmation">
-    <ConfirmationPage :email="email" :name="name" :source="source" />
+    <ConfirmationPage :email="this.email" :name="this.name" :source="this.source" :mail-properties="this.mailProperties" />
   </div>
   <div v-else-if="showError">
     <ErrorPage :errorMessage="errorMessage" />
@@ -53,7 +53,8 @@ export default {
       otherSource: '',
       showConfirmation: false,
       showError: false,
-      errorMessage: ''
+      errorMessage: '',
+      mailProperties: ''
     }
   },
   methods: {
@@ -68,6 +69,7 @@ export default {
         this.email = response.data.email
         this.name = response.data.name
         this.source = response.data.source
+        this.mailProperties = response.data.mailProperties
       } catch (error) {
         this.errorMessage = `${error.message}: ${JSON.stringify(error.response?.data)}`
         this.showError = true
