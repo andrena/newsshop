@@ -19,10 +19,17 @@ public class TestUserInitializer implements CommandLineRunner {
         if (userRepository.count() == 0) {
             AppUser admin = new AppUser();
             admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin1")); // wandle Klartext in BCrypt
+            admin.setPassword(passwordEncoder.encode("admin")); // wandle Klartext in BCrypt
             admin.setRole("ROLE_ADMIN");
 
             userRepository.save(admin);
+
+            AppUser admin1 = new AppUser();
+            admin1.setUsername("adm");
+            admin1.setPassword(passwordEncoder.encode("adm")); // wandle Klartext in BCrypt
+            admin1.setRole("ROLE_ADMIN");
+
+            userRepository.save(admin1);
         }
     }
 }
