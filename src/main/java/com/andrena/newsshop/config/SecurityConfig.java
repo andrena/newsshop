@@ -1,6 +1,5 @@
 package com.andrena.newsshop.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
@@ -16,14 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.andrena.newsshop.user.CustomUserDetailsService;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/newsletter/import").permitAll()
                         .requestMatchers("/admin.html", "/api/newsletter/subscribers", "/api/newsletter/search", "/api/newsletter/unsubscribe/**").authenticated()
                         .requestMatchers("/h2-console/", "/h2-console/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
