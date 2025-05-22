@@ -61,8 +61,8 @@ class NewsecApplicationControllerIT {
     void shouldSubscribeToNewsletter() throws Exception {
         Newsletter newsletter = Newsletter.builder()
                 .withEmail("email1@email.com")
-                .withName("name1")
-                .withSource("source1")
+                .withName("name")
+                .withSource("Website")
                 .build();
 
         post(newsletter)
@@ -71,7 +71,7 @@ class NewsecApplicationControllerIT {
         List<Newsletter> newsletters = getNewsletters();
         assertThat(newsletters)
                 .extracting("name", "email", "source")
-                .contains(tuple("name1", "email1@email.com", "source1"));
+                .contains(tuple("name", "email1@email.com", "Website"));
     }
 
     private ResultActions post(Newsletter newsletter) throws Exception {
@@ -85,15 +85,15 @@ class NewsecApplicationControllerIT {
     void shouldNotBeAbleToRegisterSameEmailTwice() throws Exception {
         Newsletter newsletter = Newsletter.builder()
                 .withEmail("email2@email.com")
-                .withName("name2")
-                .withSource("source2")
+                .withName("nameTwo")
+                .withSource("Website")
                 .build();
 
         post(newsletter)
                 .andExpect(status().isOk());
         post(newsletter)
                 .andExpect(status().isConflict())
-                .andExpect(content().string("Ein Newsletter-Abonnement für die E-Mail-Adresse 'email2@email.com' existiert bereits (Name: name2)"));
+                .andExpect(content().string("Ein Newsletter-Abonnement für die E-Mail-Adresse 'email2@email.com' existiert bereits (Name: nameTwo)"));
     }
 
     @Test
@@ -113,17 +113,17 @@ class NewsecApplicationControllerIT {
     void shouldBeAbleToDeleteNewsletter() throws Exception {
         Newsletter newsletter = Newsletter.builder()
                 .withEmail("email1@email.com")
-                .withName("name1")
-                .withSource("source1")
+                .withName("nameThree")
+                .withSource("Website")
                 .build();
 
         post(newsletter);
 
-        Long id = searchNewsletter("name1").getFirst().getId();
+        Long id = searchNewsletter("email1").getFirst().getId();
         assertThat(id).isNotNull();
         mockMvc.perform(delete("/api/newsletter/unsubscribe/" + id)).andExpect(status().isNoContent());
 
-        List<Newsletter> foundNewsletters = searchNewsletter("name1");
+        List<Newsletter> foundNewsletters = searchNewsletter("email1");
         assertThat(foundNewsletters).hasSize(0);
     }
 
