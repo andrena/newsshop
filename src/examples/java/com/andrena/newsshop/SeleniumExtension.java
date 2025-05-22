@@ -1,11 +1,7 @@
 package com.andrena.newsshop;
 
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -18,13 +14,12 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback 
     private Pages pages;
 
     public SeleniumExtension() {
-        this.driver = new ChromeDriver();
-        this.pages = new Pages(driver);
     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        driver.get("about:blank");
+        this.driver = new ChromeDriver();
+        this.pages = new Pages(driver);
         if (!(context.getTestInstance().orElse(null) instanceof Object o)) {
             return;
         }
@@ -44,7 +39,9 @@ public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback 
 
     @Override
     public void afterEach(ExtensionContext context) {
+        if (driver != null) {
+            driver.quit();
+        }
     }
-    
 
 }

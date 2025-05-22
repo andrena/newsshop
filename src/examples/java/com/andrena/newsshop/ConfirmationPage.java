@@ -1,12 +1,11 @@
 package com.andrena.newsshop;
 
-import static org.assertj.core.api.Assertions.offset;
-
 import java.time.Duration;
 import java.util.Optional;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -28,17 +27,20 @@ public class ConfirmationPage {
     }
 
     public Optional<Alert> alerts() {
-        Optional<Alert> until = new FluentWait<>(driver)
-            .withTimeout(Duration.ofMillis(2000))
-            .until(d -> {
-                try {
-                    Alert alert = d.switchTo().alert();
-                    return Optional.of(alert);
-                } catch (NoAlertPresentException e) {
-                    return Optional.empty();
-                }
-            });
-        return until;
+        try {
+            return Optional.ofNullable(new FluentWait<>(driver)
+                .withTimeout(Duration.ofMillis(2000))
+                .until(d -> {
+                    try {
+                        Alert alert = d.switchTo().alert();
+                        return alert;
+                    } catch (NoAlertPresentException e) {
+                        return null;
+                    }
+                }));
+        } catch (TimeoutException e) {
+            return Optional.empty();
+        }
     }
 
 }
