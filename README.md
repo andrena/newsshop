@@ -1,7 +1,28 @@
-newsshop
+# newsshop
+
+newsshop is a deliberate unsecure application to practice finding and exploiting security flaws in an application and fix them.
+It is a simple tool to subscribe to a newsletter
+
+## Starting the application
+
+In the project folder run
+
+```
+sudo docker-compose up
+```
+
+or 
+
+```
+sudo docker build -t newsshop1.0.0 .
+sudo docker run  -p 8080:8080 newsshop1.0.0
+```
+
 ========
 
 ## Included known vulnerabilities:
+
+In the src/examples/java there are integration tests that demostrate SQL injection and XSS in the newsshop. 
 
 ### SQL Injection
 * `name` field is vulnerable to SQL Injection
