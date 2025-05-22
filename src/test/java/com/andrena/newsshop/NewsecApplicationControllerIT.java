@@ -1,6 +1,6 @@
-package com.andrena.newsec;
+package com.andrena.newsshop;
 
-import com.andrena.newsec.model.Newsletter;
+import com.andrena.newsshop.model.Newsletter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

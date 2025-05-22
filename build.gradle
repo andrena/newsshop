@@ -1,9 +1,10 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.2'
+    id 'org.springframework.boot' version '3.4.5'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'com.github.node-gradle.node' version '3.3.0'
+    id 'com.github.node-gradle.node' version '7.1.0'
     id "org.owasp.dependencycheck" version "12.1.1"
+    id 'com.github.ben-manes.versions' version '0.52.0'
 }
 
 node {
@@ -30,18 +31,42 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    examplesImplementation.extendsFrom testImplementation
+}
+
+sourceSets {
+    examples {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDirs = [file('src/examples/java')]
+        }
+        resources {
+            srcDirs = [file('src/examples/resources')]
+        }
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.h2database:h2'
     implementation 'com.thoughtworks.xstream:xstream:1.4.6'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    
+    examplesImplementation 'org.seleniumhq.selenium:selenium-java:4.32.0'
+    examplesImplementation 'org.junit.platform:junit-platform-engine:1.11.4'
+    examplesImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
+    examplesImplementation 'io.github.bonigarcia:webdrivermanager:6.1.0'
     
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    
+    
 }
 
 tasks.register('buildFrontend', NpmTask) {

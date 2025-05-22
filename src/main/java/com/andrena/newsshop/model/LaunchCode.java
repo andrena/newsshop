@@ -1,4 +1,4 @@
-package com.andrena.newsec.model;
+package com.andrena.newsshop.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

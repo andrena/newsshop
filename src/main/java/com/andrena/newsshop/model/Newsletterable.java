@@ -1,4 +1,4 @@
-package com.andrena.newsec.model;
+package com.andrena.newsshop.model;
 
 public interface Newsletterable {
     String getMailProperties();

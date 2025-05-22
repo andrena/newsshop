@@ -1,4 +1,4 @@
-package com.andrena.newsec;
+package com.andrena.newsshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

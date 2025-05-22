@@ -1,7 +1,9 @@
-package com.andrena.newsec.controller;
+package com.andrena.newsshop.controller;
+
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.andrena.newsec.model.Newsletter;
-import com.andrena.newsec.model.Newsletterable;
-import com.andrena.newsec.repository.NewsletterRepository;
+import com.andrena.newsshop.model.Newsletter;
+import com.andrena.newsshop.model.Newsletterable;
+import com.andrena.newsshop.repository.NewsletterRepository;
 import com.thoughtworks.xstream.XStream;
-
-import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/newsletter")

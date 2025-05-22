@@ -29,7 +29,7 @@ newsshop
   * `http://localhost:8080/api/newsletter/import` with payload
     ```
     <newsletter class='dynamic-proxy'>
-        <interface>com.andrena.newsec.model.Newsletterable</interface>
+        <interface>com.andrena.newsshop.model.Newsletterable</interface>
         <handler class='java.beans.EventHandler'>
             <target class='java.lang.ProcessBuilder'>
                 <command>
@@ -147,7 +147,7 @@ headers: {
 referrer: "http://localhost:8080/subscribe.html",
 referrerPolicy: "strict-origin-when-cross-origin",
 body: `<newsletter class="dynamic-proxy">
-        <interface>com.andrena.newsec.model.Newsletterable</interface>
+        <interface>com.andrena.newsshop.model.Newsletterable</interface>
         <handler class="java.beans.EventHandler">
             <target class="java.lang.ProcessBuilder">
                 <command>

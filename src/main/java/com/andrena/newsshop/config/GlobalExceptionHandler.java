@@ -1,4 +1,4 @@
-package com.andrena.newsec.config;
+package com.andrena.newsshop.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package com.andrena.newsec.user;
+package com.andrena.newsshop.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

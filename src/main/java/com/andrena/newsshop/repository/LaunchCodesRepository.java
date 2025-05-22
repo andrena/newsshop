@@ -1,6 +1,6 @@
-package com.andrena.newsec.repository;
+package com.andrena.newsshop.repository;
 
-import com.andrena.newsec.model.LaunchCode;
+import com.andrena.newsshop.model.LaunchCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
