@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,7 +48,7 @@ public class NewsletterController {
     }
 
     @PostMapping("/subscribe")
-    public ResponseEntity<?> subscribe(@RequestBody Newsletter newsletter) {
+    public ResponseEntity<?> subscribe(@RequestBody @Valid Newsletter newsletter) {
         return newsletterRepository.findByEmailOrName(newsletter.getEmail(), newsletter.getName())
                 .<ResponseEntity<Object>>map(existingNewsletter -> ResponseEntity
                         .status(CONFLICT)

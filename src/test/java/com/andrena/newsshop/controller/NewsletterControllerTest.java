@@ -36,7 +36,6 @@ class NewsletterControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", "a", "a@", "a@b." })
-    @Disabled()
     void validateEmailFails(String email) throws Exception {
         String body = createBody(email, "sdf", "Friend");
         evaluateNewsletterForm(body, status().is4xxClientError());
@@ -44,7 +43,6 @@ class NewsletterControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"a@b.de" })
-    @Disabled()
     void validateEmailSuccess(String email) throws Exception {
         String body = createBody(email, "sdf", "Friend");
         evaluateNewsletterForm(body, status().is2xxSuccessful());
@@ -52,7 +50,6 @@ class NewsletterControllerTest {
 
     @ParameterizedTest
     @MethodSource("badNameStrings")
-    @Disabled()
     void validateNameFails(String name) throws Exception {
         String body = createBody("a@b.de", name, "Friend");
         evaluateNewsletterForm(body, status().is4xxClientError());
@@ -68,7 +65,6 @@ class NewsletterControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"John Doe" })
-    @Disabled()
     void validateNameSuccess(String name) throws Exception {
         String body = createBody("a@b.de", name, "Friend");
         ResultMatcher matcher = status().is2xxSuccessful();
@@ -84,7 +80,6 @@ class NewsletterControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"Social Media", "Friend", "Website", "Other"})
-    @Disabled()
     void validateSourceSuccess(String source) throws Exception {
         String body = createBody("a@b.de", "name", source);
         evaluateNewsletterForm(body, status().is2xxSuccessful());
@@ -92,7 +87,6 @@ class NewsletterControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", "etwasAnderes"})
-    @Disabled()
     void validateSourceFail(String source) throws Exception {
         String body = createBody("a@b.de", "name", source);
         evaluateNewsletterForm(body, status().is4xxClientError());

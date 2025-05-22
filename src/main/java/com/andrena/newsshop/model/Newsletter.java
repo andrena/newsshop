@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.*;
 
 @Entity
 public class Newsletter implements Newsletterable {
@@ -12,9 +13,19 @@ public class Newsletter implements Newsletterable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Email
     private String email;
+
+    @Size(max=50)
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9_\\- ]+$")
     private String name;
+
+    @NotBlank
+    @Pattern(regexp = "^(Friend|Social Media|Website|Other)$")
     private String source;
+
     private boolean confirmed;
 
     // Default-Mail-Properties
