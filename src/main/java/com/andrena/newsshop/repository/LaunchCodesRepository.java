@@ -28,17 +28,17 @@ public class LaunchCodesRepository {
     }
 
     private void insert(LaunchCode launchCode) {
-        execute(String.format("INSERT INTO launchCode (device, launchCode) VALUES ('%s', '%s')",
+        execute(String.format("INSERT INTO launch_code (device, launch_code) VALUES ('%s', '%s')",
                 launchCode.getDevice(), launchCode.getLaunchCode()));
     }
 
     private void update(LaunchCode launchCode) {
-        execute(String.format("UPDATE launchCode SET device = '%s', launchCode = '%s' WHERE id = %d",
+        execute(String.format("UPDATE launch_code SET device = '%s', launch_code = '%s' WHERE id = %d",
                 launchCode.getDevice(), launchCode.getLaunchCode(), launchCode.getId()));
     }
 
     public Optional<LaunchCode> findByDevice(String device) {
-        return queryOne("SELECT * FROM launchCode WHERE device = '" + device + "'", this::mapRowToLaunchCode);
+        return queryOne("SELECT * FROM launch_code WHERE device = '" + device + "'", this::mapRowToLaunchCode);
     }
 
     private void execute(String query) {
@@ -71,7 +71,7 @@ public class LaunchCodesRepository {
             LaunchCode launchCode = new LaunchCode();
             launchCode.setId(rs.getLong("id"));
             launchCode.setDevice(rs.getString("device"));
-            launchCode.setLaunchCode(rs.getString("launchCode"));
+            launchCode.setLaunchCode(rs.getString("launch_code"));
             return launchCode;
         } catch (SQLException e) {
             throw new RuntimeException(e);

