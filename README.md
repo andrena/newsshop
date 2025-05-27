@@ -24,6 +24,10 @@ sudo docker run  -p 8080:8080 newsshop1.0.0
 
 In the src/examples/java there are integration tests that demostrate SQL injection and XSS in the newsshop. 
 
+```
+ ./gradlew practiceTests 
+```
+
 ### SQL Injection
 * `name` field is vulnerable to SQL Injection
   * in a first step the attacker might read all tables in the database with
