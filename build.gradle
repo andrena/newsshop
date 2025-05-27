@@ -63,7 +63,7 @@ dependencies {
     examplesImplementation 'org.junit.platform:junit-platform-engine:1.11.4'
     examplesImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
     examplesImplementation 'io.github.bonigarcia:webdrivermanager:6.1.0'
-    
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.0'
@@ -97,4 +97,35 @@ tasks.named('bootRun') {
             '--add-opens', 'java.desktop/java.beans=ALL-UNNAMED',
             '-Xmx512m'
     ]
+}
+
+tasks.register('practiceTests',Test) {
+    description = 'Runs tests for fixing practices folder'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.examples.output.classesDirs
+    classpath = sourceSets.examples.runtimeClasspath
+
+
+    useJUnitPlatform()
+
+
+    testLogging {
+        showStandardStreams = true
+
+        events "passed", "skipped", "failed"
+
+        exceptionFormat "full"
+
+        showExceptions true
+        showCauses true
+        showStackTraces true
+
+        info.events = ["started", "passed", "skipped", "failed", "standard_out", "standard_error"]
+        debug.events = ["started", "passed", "skipped", "failed", "standard_out", "standard_error"]
+    }
+
+    reports {
+        html.required = true
+    }
 }
