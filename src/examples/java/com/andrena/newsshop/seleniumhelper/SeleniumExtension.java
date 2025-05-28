@@ -1,4 +1,4 @@
-package com.andrena.newsshop;
+package com.andrena.newsshop.seleniumhelper;
 
 import java.util.Arrays;
 

@@ -1,10 +1,10 @@
-package com.andrena.newsshop;
+package com.andrena.newsshop.seleniumhelper;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 public class IndexPage {
-    
+
     private Pages pages;
 
     @FindBy(css="a[href='subscribe.html']")
@@ -14,5 +14,5 @@ public class IndexPage {
         subscription.click();
         return pages.to(SubscriptionPage::new);
     }
-        
+
 }
