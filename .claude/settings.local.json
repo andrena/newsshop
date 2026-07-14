@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(podman --version)",
+      "Bash(podman compose *)",
+      "Bash(docker --version)",
+      "Bash(podman-compose --version)",
+      "Bash(./gradlew build *)",
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm install *)"
+    ]
+  }
+}

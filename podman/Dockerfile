@@ -1,7 +1,7 @@
 # Stage 1: Build der gesamten Anwendung mit Gradle (Java 21)
 FROM gradle:jdk21 AS build
 WORKDIR /app
-COPY . .
+COPY .. .
 # Hier wird sowohl Frontend als auch Backend gebaut
 RUN gradle bootJar --no-daemon
 
